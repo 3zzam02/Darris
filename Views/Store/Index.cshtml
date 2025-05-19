@@ -1,0 +1,219 @@
+﻿@model StoreSearchModel
+
+@{
+    ViewData["Title"] = "Major";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Darris</title>
+
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Bootstrap Icons CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: default;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 1rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            }
+
+            .product-card img {
+                height: 180px;
+                object-fit: contain;
+                margin-bottom: 1rem;
+                border-radius: 8px;
+            }
+
+        h5 {
+            font-weight: 700;
+            color: #08618d;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .text-muted {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+            text-align: center;
+        }
+
+        h4 {
+            color: #08618d;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            background-color: #08618d;
+            border-color: #08618d;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+            .btn-primary:hover, .btn-primary:focus {
+                background-color: #064d6a;
+                border-color: #064d6a;
+                color: white;
+            }
+
+        .btn-warning {
+            background-color: #f0ad4e;
+            border-color: #f0ad4e;
+            color: #212529;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+
+            .btn-warning:hover, .btn-warning:focus {
+                background-color: #d9952a;
+                border-color: #d9952a;
+                color: #212529;
+            }
+
+        .btn-sm {
+            padding: 0.4rem 0.6rem;
+        }
+
+        /* Form filters and search */
+        form.row.g-3 > div {
+            max-width: 100%;
+        }
+
+        select.form-select, input.form-control {
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+            select.form-select:focus, input.form-control:focus {
+                border-color: #08618d;
+                box-shadow: 0 0 8px rgba(8, 97, 141, 0.25);
+                outline: none;
+            }
+
+        /* Pagination */
+        .pagination {
+            justify-content: center;
+        }
+
+        /* Responsive spacing */
+        @@media (max-width: 575.98px) {
+            .product-card
+
+        {
+            padding: 1rem;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <h2 class="pb-4 text-center text-primary fw-bold">Majors</h2>
+
+        <form class="row g-3 mb-4" method="get" novalidate>
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <select class="form-select" name="category" asp-for="Category" onchange="this.form.submit()">
+                    <option value="Default" selected="@(Model.Category == "Default" ? "selected" : "")">Default</option>
+                    <option value="IT" selected="@(Model.Category == "IT" ? "selected" : "")">IT</option>
+                    <option value="Faculty of Medicine" selected="@(Model.Category == "Faculty of Medicine" ? "selected" : "")">Faculty of Medicine</option>
+                    <option value="Faculty of Economics" selected="@(Model.Category == "Faculty of Economics" ? "selected" : "")">Faculty of Economics</option>
+                    <option value="College of Sharia" selected="@(Model.Category == "College of Sharia" ? "selected" : "")">College of Sharia</option>
+                    <option value="Faculty of Arts" selected="@(Model.Category == "Faculty of Arts" ? "selected" : "")">Faculty of Arts</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <select class="form-select" name="sort" asp-for="Sort" onchange="this.form.submit()">
+                    <option value="newest" selected="@(Model.Sort == "newest" ? "selected" : "")">Order by Hours (Newest)</option>
+                    <option value="price_asc" selected="@(Model.Sort == "price_asc" ? "selected" : "")">Major Hours: Highest</option>
+                    <option value="price_desc" selected="@(Model.Sort == "price_desc" ? "selected" : "")">Major Hours: Lowest</option>
+                </select>
+            </div>
+            <div class="col-lg-6 col-md-12 d-flex">
+                <input class="form-control me-2" name="search" asp-for="Search" placeholder="Search by Name Of Major" value="@Model.Search" />
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </div>
+        </form>
+
+        <div class="row g-4 mb-5">
+            @if (ViewBag.Products != null && ((IEnumerable<dynamic>)ViewBag.Products).Any())
+            {
+                foreach (var product in ViewBag.Products)
+                {
+                    <div class="col-lg-3 col-md-6">
+                        <div class="product-card h-100 d-flex flex-column justify-content-between">
+                            <img src="/products/@product.ImageFileName" alt="@product.Name" class="img-fluid mb-3 rounded" />
+                            <h5>@product.Name</h5>
+                            <p class="text-muted mb-1">Type Specialization: @product.Brand</p>
+                            <p class="text-muted mb-3">College Name: @product.Category</p>
+                            <h4>@product.Price Hours</h4>
+                            <a class="btn btn-primary btn-sm mb-2" asp-controller="Store" asp-action="Details" asp-route-id="@product.Id" role="button">Details</a>
+                            <button type="button" class="btn btn-warning btn-sm mb-2" onclick="addToCart(this, @product.Id)">
+                                View Plan <i class="bi bi-diagram-3-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center text-muted">
+                    <p>No products found matching your criteria.</p>
+                </div>
+            }
+        </div>
+
+        <nav aria-label="Pagination">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
+                {
+                    var active = i == (int)ViewBag.PageIndex ? "active" : "";
+                    <li class="page-item @active">
+                        <a class="page-link" asp-route-pageIndex="@i"
+                           asp-route-search="@Model.Search"
+                           asp-route-brand="@Model.Brand"
+                           asp-route-category="@Model.Category"
+                           asp-route-sort="@Model.Sort">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+
+    </div>
+
+    <script>
+        function addToCart(button, productId) {
+            // Placeholder: replace with real logic
+            alert('Added product ' + productId + ' to cart.');
+        }
+    </script>
+</body>
+</html>

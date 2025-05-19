@@ -1,0 +1,252 @@
+﻿@model RegisterDto
+@{
+    Layout = null;
+    ViewData["Title"] = "Register";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Darris</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #dbe9fb, #f0f4f8);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 3rem 1rem 4rem;
+            overflow-x: hidden;
+        }
+
+        .page-wrapper {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(8, 97, 141, 0.15);
+            width: 100%;
+            max-width: 520px;
+            padding: 2.5rem 2rem 3rem;
+            animation: fadeInUp 0.8s ease forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            animation: fadeInDown 1s ease forwards;
+        }
+
+            .logo-wrapper img {
+                max-height: 80px;
+                width: auto;
+                filter: drop-shadow(0 0 3px rgba(8,97,141,0.3));
+            }
+
+        h2 {
+            font-weight: 700;
+            color: #08618d;
+            margin-bottom: 0.25rem;
+            text-align: center;
+            animation: fadeInDown 1s ease forwards;
+        }
+
+        .tagline {
+            text-align: center;
+            color: #495057;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            font-style: italic;
+            animation: fadeIn 1.2s ease forwards;
+        }
+
+        label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            box-shadow: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+            .form-control:focus {
+                border-color: #08618d;
+                box-shadow: 0 0 8px rgba(8, 97, 141, 0.25);
+            }
+
+        .btn-primary {
+            background-color: #08618d;
+            border-color: #08618d;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+            .btn-primary:hover,
+            .btn-primary:focus {
+                background-color: #064d6a;
+                border-color: #064d6a;
+            }
+
+        .btn-outline-primary {
+            border-color: #08618d;
+            color: #08618d;
+            font-weight: 600;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+            .btn-outline-primary:hover,
+            .btn-outline-primary:focus {
+                background-color: #08618d;
+                color: #fff;
+            }
+
+        .text-danger {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        hr {
+            margin: 1rem 0 1.5rem;
+            border-color: #dee2e6;
+        }
+
+        /* Animations */
+        @@keyframes fadeInUp {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(25px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        @@keyframes fadeInDown {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="logo-wrapper">
+            <img src="/images/darris-removebg-preview.png" alt="Darris Logo" />
+        </div>
+
+        <h2>Register</h2>
+        <p class="tagline">Join Darris to simplify your academic journey.</p>
+        <hr />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+        <form method="post" novalidate>
+            <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label" for="FirstName">First Name*</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="FirstName" id="FirstName" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label" for="LastName">Last Name*</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="LastName" id="LastName" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label" for="Email">Email*</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="Email" id="Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label" for="PhoneNumber">Phone</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="PhoneNumber" id="PhoneNumber" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label" for="Address">Address*</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="Address" id="Address" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label" for="Password">Password*</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="Password" type="password" id="Password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label" for="ConfirmPassword">Confirm Password*</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="ConfirmPassword" type="password" id="ConfirmPassword" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-4 offset-sm-4 d-grid">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+                <div class="col-sm-4 d-grid">
+                    <a class="btn btn-outline-primary" asp-controller="Home" asp-action="Index" role="button">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

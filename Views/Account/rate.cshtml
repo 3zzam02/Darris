@@ -1,0 +1,222 @@
+﻿
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .calculator {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .course {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: flex-end;
+        }
+
+        .input-field {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+            input:focus, select:focus {
+                border-color: #4dabf7;
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+            }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #339af0;
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background-color: #228be6;
+            }
+
+        .btn-danger {
+            background-color: #ff6b6b;
+            color: white;
+            padding: 12px;
+            width: 40px;
+        }
+
+            .btn-danger:hover {
+                background-color: #fa5252;
+            }
+
+        .btn-success {
+            background-color: #40c057;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+            .btn-success:hover {
+                background-color: #37b24d;
+            }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f1f3f5;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            display: none;
+        }
+
+            .result p {
+                margin: 0;
+                padding: 5px 0;
+            }
+
+        .gpa-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #339af0;
+        }
+    </style>
+
+<body>
+    <div class="calculator">
+        <div id="courses-container">
+            <div class="course">
+                <div class="input-field">
+                    <label>Hours number</label>
+                    <input type="number" class="hours" min="1" value="3" required>
+                </div>
+                <div class="input-field">
+                    <label>the rate</label>
+                    <select class="grade" required>
+                        <option value="4">A+ (4.0)</option>
+                        <option value="3.75">A (3.75)</option>
+                        <option value="3.5">B+ (3.5)</option>
+                        <option value="3">B (3.0)</option>
+                        <option value="2.5">C+ (2.5)</option>
+                        <option value="2">C (2.0)</option>
+                        <option value="1.5">D+ (1.5)</option>
+                        <option value="1">D (1.0)</option>
+                        <option value="0">F (0.0)</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-danger remove-btn" onclick="removeCourse(this)" style="display: none;">×</button>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-success add-btn" onclick="addCourse()">+Add Subject</button>
+
+        <button type="button" class="btn btn-primary" onclick="calculateGPA()">Calculate the rate</button>
+
+        <div id="result" class="result">
+            <p>Cumulative average: <span class="gpa-value">0.00</span></p>
+            <p>Semester hours: <span id="total-hours">0</span></p>
+        </div>
+    </div>
+
+    <script>
+        function addCourse() {
+            const container = document.getElementById('courses-container');
+            const courseRow = document.createElement('div');
+            courseRow.className = 'course';
+            courseRow.innerHTML = `
+                        <div class="input-field">
+                            <label>Hours number</label>
+                            <input type="number" class="hours" min="1" value="3" required>
+                        </div>
+                        <div class="input-field">
+                            <label>the rate</label>
+                            <select class="grade" required>
+                                <option value="4">A+ (4.0)</option>
+                                <option value="3.75">A (3.75)</option>
+                                <option value="3.5">B+ (3.5)</option>
+                                <option value="3">B (3.0)</option>
+                                <option value="2.5">C+ (2.5)</option>
+                                <option value="2">C (2.0)</option>
+                                <option value="1.5">D+ (1.5)</option>
+                                <option value="1">D (1.0)</option>
+                                <option value="0">F (0.0)</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-danger remove-btn" onclick="removeCourse(this)">×</button>
+                    `;
+            container.appendChild(courseRow);
+
+            updateRemoveButtons();
+        }
+
+        function removeCourse(button) {
+            const row = button.closest('.course');
+            row.remove();
+            updateRemoveButtons();
+        }
+
+        function updateRemoveButtons() {
+            const rows = document.querySelectorAll('.course');
+            rows.forEach((row, index) => {
+                const removeBtn = row.querySelector('.remove-btn');
+                if (rows.length > 1) {
+                    removeBtn.style.display = 'block';
+                } else {
+                    removeBtn.style.display = 'none';
+                }
+            });
+        }
+
+        function calculateGPA() {
+            const rows = document.querySelectorAll('.course');
+            let totalPoints = 0;
+            let totalHours = 0;
+
+            rows.forEach(row => {
+                const hours = parseFloat(row.querySelector('.hours').value);
+                const grade = parseFloat(row.querySelector('.grade').value);
+
+                totalPoints += hours * grade;
+                totalHours += hours;
+            });
+
+            const gpa = totalHours > 0 ? totalPoints / totalHours : 0;
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            document.querySelector('.gpa-value').textContent = gpa.toFixed(2);
+            document.getElementById('total-hours').textContent = totalHours;
+        }
+    </script>
+</body>
+</html>

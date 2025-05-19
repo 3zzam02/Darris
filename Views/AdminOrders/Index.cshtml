@@ -1,0 +1,121 @@
+﻿@{
+    var orders = (List<Order>)ViewBag.Orders;
+    int totalPages = (int)ViewBag.TotalPages;
+    int pageIndex = (int)ViewBag.PageIndex;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Orders List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container py-4">
+        <h3 class="text-center mb-4">List of Orders</h3>
+
+        <table class="table table-striped table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Id</th>
+                    <th>Client</th>
+                    <th>Units</th>
+                    <th>Total</th>
+                    <th>Payment Method</th>
+                    <th>Payment Status</th>
+                    <th>Order Status</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var order in orders)
+                {
+                    int count = 0;
+                    decimal total = order.ShippingFee;
+                    foreach (var item in order.Items)
+                    {
+                        count += item.Quantity;
+                        total += item.Quantity * item.UnitPrice;
+                    }
+
+                    string paymentBadgeColor = "bg-danger";
+                    if (order.PaymentStatus == "pending")
+                    {
+                        paymentBadgeColor = "bg-warning text-dark";
+                    }
+                    else if (order.PaymentStatus == "accepted")
+                    {
+                        paymentBadgeColor = "bg-success";
+                    }
+                    else if (order.PaymentStatus == "canceled")
+                    {
+                        paymentBadgeColor = "bg-secondary";
+                    }
+
+                    string orderBadgeColor = "bg-danger";
+                    if (order.OrderStatus == "created")
+                    {
+                        orderBadgeColor = "bg-warning text-dark";
+                    }
+                    else if (order.OrderStatus == "accepted")
+                    {
+                        orderBadgeColor = "bg-success";
+                    }
+                    else if (order.OrderStatus == "canceled")
+                    {
+                        orderBadgeColor = "bg-secondary";
+                    }
+                    else if (order.OrderStatus == "shipped")
+                    {
+                        orderBadgeColor = "bg-primary";
+                    }
+                    else if (order.OrderStatus == "delivered")
+                    {
+                        orderBadgeColor = "bg-success";
+                    }
+                    else if (order.OrderStatus == "returned")
+                    {
+                        orderBadgeColor = "bg-info text-dark";
+                    }
+                    else if (order.OrderStatus == "deleted")
+                    {
+                        orderBadgeColor = "bg-dark";
+                    }
+
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@(order.Client.FirstName + " " + order.Client.LastName)</td>
+                    <td>@count</td>
+                    <td>@total$</td>
+                    <td>@order.PaymentMethod</td>
+                    <td><span class="badge rounded-pill @paymentBadgeColor">@order.PaymentStatus</span></td>
+                    <td><span class="badge rounded-pill @orderBadgeColor">@order.OrderStatus</span></td>
+                    <td>@order.CreatedAt.ToString("MM/dd/yyyy")</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" asp-controller="AdminOrders" asp-action="Details"
+                           asp-route-id="@order.Id">Details</a>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        <nav>
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    string active = i == pageIndex ? "active" : "";
+                <li class="page-item @active">
+                    <a class="page-link" asp-route-pageIndex="@i">@i</a>
+                </li>
+                }
+            </ul>
+        </nav>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
