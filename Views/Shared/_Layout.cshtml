@@ -139,8 +139,6 @@
                         {
                             var appUser = await UserManager.GetUserAsync(User);
 
-                            <!-- Keep dropdown menu only here -->
-
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     @(appUser!.FirstName + " " + appUser!.LastName)@(User.IsInRole("admin") ? " (Admin)" : User.IsInRole("student") ? " (Student)" : "")
@@ -194,6 +192,36 @@
     {
         @RenderBody()
     }
+
+    <!-- Footer -->
+    <footer class="bg-light text-center text-md-start border-top mt-5">
+        <div class="container py-4">
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center text-md-left">
+                    <p class="mb-1">Email: <a href="mailto:mahmoudjaber140@gmail.com" class="text-decoration-none">mahmoudjaber140@gmail.com</a></p>
+                    <p class="mb-0">Phone: <a href="tel:+962777777777" class="text-decoration-none">+962 7 7777 7777</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        footer a {
+            color: #08618d;
+            transition: color 0.3s ease;
+        }
+
+            footer a:hover {
+                color: #064d6a;
+                text-decoration: underline;
+            }
+
+        footer p {
+            font-weight: 500;
+            color: #495057;
+        }
+    </style>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
