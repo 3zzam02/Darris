@@ -1,4 +1,8 @@
-﻿
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>GPA Calculator</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -83,12 +87,17 @@
         .btn-success {
             background-color: #40c057;
             color: white;
-            margin-bottom: 20px;
         }
 
             .btn-success:hover {
                 background-color: #37b24d;
             }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
 
         .result {
             margin-top: 25px;
@@ -110,15 +119,37 @@
             font-weight: bold;
             color: #339af0;
         }
-    </style>
 
+        .previous-info {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+            .previous-info .input-field {
+                flex: 1;
+            }
+    </style>
+</head>
 <body>
     <div class="calculator">
+
+        <div class="previous-info">
+            <div class="input-field">
+                <label for="prev-hours">Previously Passed Hours</label>
+                <input type="number" id="prev-hours" min="0" value="0" step="0.1" />
+            </div>
+            <div class="input-field">
+                <label for="prev-gpa">Current Cumulative GPA</label>
+                <input type="number" id="prev-gpa" min="0" max="4" step="0.01" value="0.00" />
+            </div>
+        </div>
+
         <div id="courses-container">
             <div class="course">
                 <div class="input-field">
                     <label>Hours number</label>
-                    <input type="number" class="hours" min="1" value="3" required>
+                    <input type="number" class="hours" min="1" value="3" required />
                 </div>
                 <div class="input-field">
                     <label>the rate</label>
@@ -138,13 +169,15 @@
             </div>
         </div>
 
-        <button type="button" class="btn btn-success add-btn" onclick="addCourse()">+Add Subject</button>
-
-        <button type="button" class="btn btn-primary" onclick="calculateGPA()">Calculate the rate</button>
+        <div class="button-group">
+            <button type="button" class="btn btn-success add-btn" onclick="addCourse()">+Add Subject</button>
+            <button type="button" class="btn btn-primary" onclick="calculateGPA()">Calculate the rate</button>
+        </div>
 
         <div id="result" class="result">
-            <p>Cumulative average: <span class="gpa-value">0.00</span></p>
-            <p>Semester hours: <span id="total-hours">0</span></p>
+            <p>Final Cumulative GPA: <span class="gpa-value">0.00</span></p>
+            <p>Total Semester Hours: <span id="total-hours">0</span></p>
+            <p>Total Passed Hours (including semester): <span id="all-hours">0</span></p>
         </div>
     </div>
 
@@ -154,28 +187,27 @@
             const courseRow = document.createElement('div');
             courseRow.className = 'course';
             courseRow.innerHTML = `
-                        <div class="input-field">
-                            <label>Hours number</label>
-                            <input type="number" class="hours" min="1" value="3" required>
-                        </div>
-                        <div class="input-field">
-                            <label>the rate</label>
-                            <select class="grade" required>
-                                <option value="4">A+ (4.0)</option>
-                                <option value="3.75">A (3.75)</option>
-                                <option value="3.5">B+ (3.5)</option>
-                                <option value="3">B (3.0)</option>
-                                <option value="2.5">C+ (2.5)</option>
-                                <option value="2">C (2.0)</option>
-                                <option value="1.5">D+ (1.5)</option>
-                                <option value="1">D (1.0)</option>
-                                <option value="0">F (0.0)</option>
-                            </select>
-                        </div>
-                        <button type="button" class="btn btn-danger remove-btn" onclick="removeCourse(this)">×</button>
-                    `;
+                <div class="input-field">
+                    <label>Hours number</label>
+                    <input type="number" class="hours" min="1" value="3" required />
+                </div>
+                <div class="input-field">
+                    <label>the rate</label>
+                    <select class="grade" required>
+                        <option value="4">A+ (4.0)</option>
+                        <option value="3.75">A (3.75)</option>
+                        <option value="3.5">B+ (3.5)</option>
+                        <option value="3">B (3.0)</option>
+                        <option value="2.5">C+ (2.5)</option>
+                        <option value="2">C (2.0)</option>
+                        <option value="1.5">D+ (1.5)</option>
+                        <option value="1">D (1.0)</option>
+                        <option value="0">F (0.0)</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-danger remove-btn" onclick="removeCourse(this)">×</button>
+            `;
             container.appendChild(courseRow);
-
             updateRemoveButtons();
         }
 
@@ -187,36 +219,44 @@
 
         function updateRemoveButtons() {
             const rows = document.querySelectorAll('.course');
-            rows.forEach((row, index) => {
+            rows.forEach(row => {
                 const removeBtn = row.querySelector('.remove-btn');
-                if (rows.length > 1) {
-                    removeBtn.style.display = 'block';
-                } else {
-                    removeBtn.style.display = 'none';
-                }
+                removeBtn.style.display = rows.length > 1 ? 'block' : 'none';
             });
         }
 
         function calculateGPA() {
-            const rows = document.querySelectorAll('.course');
-            let totalPoints = 0;
-            let totalHours = 0;
+            const prevHours = parseFloat(document.getElementById('prev-hours').value) || 0;
+            const prevGPA = parseFloat(document.getElementById('prev-gpa').value) || 0;
 
-            rows.forEach(row => {
+            const rows = document.querySelectorAll('.course');
+            let semesterPoints = 0;
+            let semesterHours = 0;
+
+            for (const row of rows) {
                 const hours = parseFloat(row.querySelector('.hours').value);
                 const grade = parseFloat(row.querySelector('.grade').value);
 
-                totalPoints += hours * grade;
-                totalHours += hours;
-            });
+                if (isNaN(hours) || isNaN(grade) || hours <= 0) {
+                    alert('Please enter valid positive hours and select a grade.');
+                    return;
+                }
 
-            const gpa = totalHours > 0 ? totalPoints / totalHours : 0;
+                semesterPoints += hours * grade;
+                semesterHours += hours;
+            }
 
-            const resultDiv = document.getElementById('result');
-            resultDiv.style.display = 'block';
-            document.querySelector('.gpa-value').textContent = gpa.toFixed(2);
-            document.getElementById('total-hours').textContent = totalHours;
+            const semesterGPA = semesterHours > 0 ? semesterPoints / semesterHours : 0;
+            const totalHours = prevHours + semesterHours;
+            const finalGPA = totalHours > 0 ? ((prevHours * prevGPA) + (semesterHours * semesterGPA)) / totalHours : 0;
+
+            document.getElementById('result').style.display = 'block';
+            document.querySelector('.gpa-value').textContent = finalGPA.toFixed(2);
+            document.getElementById('total-hours').textContent = semesterHours.toFixed(2);
+            document.getElementById('all-hours').textContent = totalHours.toFixed(2);
         }
+
+        window.onload = updateRemoveButtons;
     </script>
 </body>
 </html>

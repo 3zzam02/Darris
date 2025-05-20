@@ -302,7 +302,7 @@ namespace BestStoreMVC.Controllers
             return View();
         }
 
-
+        [HttpGet]
         public IActionResult ResetPassword(string? token)
         {
             if (signInManager.IsSignedIn(User))
@@ -310,24 +310,21 @@ namespace BestStoreMVC.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (token == null)
+            if (string.IsNullOrEmpty(token))
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("ForgotPassword");
             }
 
-            return View();
+            var model = new PasswordResetDto { Token = token };
+            return View(model);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> ResetPassword(string? token, PasswordResetDto model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(PasswordResetDto model)
         {
             if (signInManager.IsSignedIn(User))
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
-            if (token == null)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -340,25 +337,26 @@ namespace BestStoreMVC.Controllers
             var user = await userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                ViewBag.ErrorMessage = "Token not valid!";
+                // To avoid username enumeration, do not reveal user does not exist
+                ModelState.AddModelError(string.Empty, "Invalid password reset attempt.");
                 return View(model);
             }
 
-            var result = await userManager.ResetPasswordAsync(user, token, model.Password);
+            var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
 
             if (result.Succeeded)
             {
                 ViewBag.SuccessMessage = "Password reset successfully!";
+                return View(); // Or redirect to login page after success
             }
             else
             {
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError("", error.Description);
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
+                return View(model);
             }
-
-            return View(model);
         }
 
     }

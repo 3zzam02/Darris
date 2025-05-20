@@ -13,5 +13,6 @@ namespace BestStoreMVC.Models
         [Required(ErrorMessage = "The Confirm Password field is required")]
         [Compare("Password", ErrorMessage = "Confirm Password and Password do not match")]
         public string ConfirmPassword { get; set; } = "";
+        public string Token { get; internal set; }
     }
 }

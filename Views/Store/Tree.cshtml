@@ -329,7 +329,7 @@
                             if (response.success) {
                                 $(".card[data-id='" + imageId + "']").remove();
                                 if ($('#gallery .card').length === 0) {
-                                    $('#gallery').html('<p id="noImagesMessage">لا توجد صور لهذه الخطة</p>');
+                                    $('#gallery').html('<p id="noImagesMessage">لا توجد صور للجدول</p>');
                                 }
                             } else {
                                 alert(response.message || 'حدث خطأ أثناء الحذف.');

@@ -141,24 +141,24 @@
 
         <form class="row g-3 mb-4" method="get" novalidate>
             <div class="col-lg-2 col-md-4 col-sm-6">
-                <select class="form-select" name="category" asp-for="Category" onchange="this.form.submit()">
-                    <option value="Default" selected="@(Model.Category == "Default" ? "selected" : "")">Default</option>
-                    <option value="IT" selected="@(Model.Category == "IT" ? "selected" : "")">IT</option>
-                    <option value="Faculty of Medicine" selected="@(Model.Category == "Faculty of Medicine" ? "selected" : "")">Faculty of Medicine</option>
-                    <option value="Faculty of Economics" selected="@(Model.Category == "Faculty of Economics" ? "selected" : "")">Faculty of Economics</option>
-                    <option value="College of Sharia" selected="@(Model.Category == "College of Sharia" ? "selected" : "")">College of Sharia</option>
-                    <option value="Faculty of Arts" selected="@(Model.Category == "Faculty of Arts" ? "selected" : "")">Faculty of Arts</option>
+                <select class="form-select" asp-for="Category" onchange="this.form.submit()">
+                    <option value="">All</option>
+                    <option value="IT">IT</option>
+                    <option value="Faculty of Medicine">Faculty of Medicine</option>
+                    <option value="Faculty of Economics">Faculty of Economics</option>
+                    <option value="College of Sharia">College of Sharia</option>
+                    <option value="Faculty of Arts">Faculty of Arts</option>
                 </select>
             </div>
             <div class="col-lg-2 col-md-4 col-sm-6">
-                <select class="form-select" name="sort" asp-for="Sort" onchange="this.form.submit()">
-                    <option value="newest" selected="@(Model.Sort == "newest" ? "selected" : "")">Order by Hours (Newest)</option>
-                    <option value="price_asc" selected="@(Model.Sort == "price_asc" ? "selected" : "")">Major Hours: Highest</option>
-                    <option value="price_desc" selected="@(Model.Sort == "price_desc" ? "selected" : "")">Major Hours: Lowest</option>
+                <select class="form-select" asp-for="Sort" onchange="this.form.submit()">
+                    <option value="newest">Newest</option>
+                    <option value="hours_desc">Major Hours: Highest</option>
+                    <option value="hours_asc">Major Hours: Lowest</option>
                 </select>
             </div>
             <div class="col-lg-6 col-md-12 d-flex">
-                <input class="form-control me-2" name="search" asp-for="Search" placeholder="Search by Name Of Major" value="@Model.Search" />
+                <input asp-for="Search" class="form-control me-2" placeholder="Search by Name Of Major" />
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </div>
         </form>
@@ -172,13 +172,12 @@
                         <div class="product-card h-100 d-flex flex-column justify-content-between">
                             <img src="/products/@product.ImageFileName" alt="@product.Name" class="img-fluid mb-3 rounded" />
                             <h5>@product.Name</h5>
-                            <p class="text-muted mb-1">Type Specialization: @product.Brand</p>
+                            <p class="text-muted mb-1">Field of Major: @product.Brand</p>
                             <p class="text-muted mb-3">College Name: @product.Category</p>
                             <h4>@product.Price Hours</h4>
                             <a class="btn btn-primary btn-sm mb-2" asp-controller="Store" asp-action="Details" asp-route-id="@product.Id" role="button">Details</a>
-                            <button type="button" class="btn btn-warning btn-sm mb-2" onclick="addToCart(this, @product.Id)">
-                                View Plan <i class="bi bi-diagram-3-fill"></i>
-                            </button>
+                            <a class="btn btn-warning btn-sm mb-2 text-white" asp-controller="Store" asp-action="Tree" asp-route-id="@product.Id">Tree Plan</a>
+
                         </div>
                     </div>
                 }
@@ -199,7 +198,6 @@
                     <li class="page-item @active">
                         <a class="page-link" asp-route-pageIndex="@i"
                            asp-route-search="@Model.Search"
-                           asp-route-brand="@Model.Brand"
                            asp-route-category="@Model.Category"
                            asp-route-sort="@Model.Sort">@i</a>
                     </li>
@@ -209,11 +207,10 @@
 
     </div>
 
-    <script>
-        function addToCart(button, productId) {
-            // Placeholder: replace with real logic
-            alert('Added product ' + productId + ' to cart.');
-        }
-    </script>
+    @* <script> *@
+    @*     function addToCart(button, productId) { *@
+    @*         alert('Added product ' + productId + ' to cart.'); *@
+    @*     } *@
+    @* </script> *@
 </body>
 </html>

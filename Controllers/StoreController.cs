@@ -15,71 +15,54 @@ namespace BestStoreMVC.Controllers
             this.context = context;
         }
 
-        public IActionResult Index(int pageIndex, string? search, string? brand, string? category, string? sort)
+        public IActionResult Index(int pageIndex = 1, string? search = "", string? category = "", string? sort = "newest")
         {
             IQueryable<Product> query = context.Products;
 
-            // search functionality
-            if (search != null && search.Length > 0)
+            if (!string.IsNullOrWhiteSpace(search))
             {
                 query = query.Where(p => p.Name.Contains(search));
             }
 
-
-            // filter functionality
-            if (brand != null && brand.Length > 0)
+            if (!string.IsNullOrWhiteSpace(category))
             {
-                query = query.Where(p => p.Brand.Contains(brand));
+                query = query.Where(p => p.Category == category);
             }
 
-            if (category != null && category.Length > 0)
+            switch (sort)
             {
-                query = query.Where(p => p.Category.Contains(category));
+                case "hours_asc":
+                    query = query.OrderBy(p => p.Price);
+                    break;
+                case "hours_desc":
+                    query = query.OrderByDescending(p => p.Price);
+                    break;
+                default:
+                    query = query.OrderByDescending(p => p.Id);
+                    break;
             }
 
-            // sort functionality
-            if (sort == "price_asc")
-            {
-                query = query.OrderBy(p => p.Price);
-            }
-            else if (sort == "price_desc")
-            {
-                query = query.OrderByDescending(p => p.Price);
-            }
-            else
-            {
-                // newest products first
-                query = query.OrderByDescending(p => p.Id);
-            }
+            if (pageIndex < 1) pageIndex = 1;
 
-            
+            int count = query.Count();
+            int totalPages = (int)Math.Ceiling(count / (double)pageSize);
 
-            // pagination functionality
-            if (pageIndex < 1)
-            {
-                pageIndex = 1;
-            }
-
-            decimal count = query.Count();
-            int totalPages = (int)Math.Ceiling(count / pageSize);
-            query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
-
-
-            var products = query.ToList();
+            var products = query.Skip((pageIndex - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToList();
 
             ViewBag.Products = products;
             ViewBag.PageIndex = pageIndex;
             ViewBag.TotalPages = totalPages;
 
-            var storeSearchModel = new StoreSearchModel()
+            var model = new StoreSearchModel
             {
                 Search = search,
-                Brand = brand,
                 Category = category,
                 Sort = sort
             };
 
-            return View(storeSearchModel);
+            return View(model);
         }
 
 
